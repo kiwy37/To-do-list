@@ -1,0 +1,169 @@
+﻿<Window x:Class="ToDoList.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewModel="clr-namespace:ToDoList.ViewModels"
+    xmlns:vm="clr-namespace:ToDoList"
+    Title="ToDoList" Height="450" Width="800">
+
+    <Window.Resources>
+        <viewModel:OpenDBVM x:Key="vm1"></viewModel:OpenDBVM>
+        <viewModel:NewDBVM x:Key="vm2"></viewModel:NewDBVM>
+        <viewModel:AddRootTDLVM x:Key="vm3"></viewModel:AddRootTDLVM>
+        <viewModel:AddSubTDLVM x:Key="vm4"></viewModel:AddSubTDLVM>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:ClasaDeBinding/>
+    </Window.DataContext>
+
+    <Grid Name="GridMare" Background="Gray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" Background="Turquoise">
+            <MenuItem Header="File">
+                <MenuItem Header="Open Database" Command="{Binding Source={StaticResource vm1}, Path=CommandOpenDB}"/>
+                <MenuItem Header="New Database" Command="{Binding Source={StaticResource vm2}, Path=CommandNewDB}"/>
+                <MenuItem Header="Archive Database" Click="ArchiveDatabase"/>
+                <Separator/>
+                <MenuItem Header="Exit" Click="Exit"/>
+            </MenuItem>
+            <MenuItem Header="TDL">
+                <MenuItem Header="Add Root TDL" Command="{Binding Source={StaticResource vm3}, Path=CommandAddRootTDL}"/>
+                <MenuItem Header="Add Sub-TDL" Command="{Binding Source={StaticResource vm4}, Path=CommandAddSubTDL}"/>
+                <MenuItem Header="Edit" Click="EditTDL"/>
+                <MenuItem Header="Delete" Click="DeleteTDL"/>
+                <Separator/>
+                <MenuItem Header="Move Up" Click="MoveUpTDL"/>
+                <MenuItem Header="Move Down" Click="MoveDownTDL"/>
+                <MenuItem Header="Change Path" Click="ChangePathTDL"/>
+            </MenuItem>
+            <MenuItem Header="Task">
+                <MenuItem Header="Add" Click="AddTask"/>
+                <MenuItem Header="Edit" Click="EditTask"/>
+                <MenuItem Header="Delete" Click="DeleteTask"/>
+                <MenuItem Header="Set Done" Click="SetDone"/>
+                <MenuItem Header="Set In Progress" Click="SetInProgress"/>
+                <Separator/>
+                <MenuItem Header="Move Up" Click="MoveUpTask"/>
+                <MenuItem Header="Move Down" Click="MoveDownTask"/>
+                <Separator/>
+                <MenuItem Header="Manage Category" Click="ManageCategory"/>
+                <MenuItem Header="Find Task" Click="FindTask"/>
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Sort">
+                    <MenuItem Header="By deadline" Click="FilterByDeadline"/>
+                    <MenuItem Header="By priority" Click="FilterByPriority"/>
+                </MenuItem>
+                <MenuItem Header="Filter">
+                    <MenuItem Header="Category" Click="FilterCategory"/>
+                    <MenuItem Header="Done" Click="DoneFilter"/>
+                    <MenuItem Header="Outdated" Click="OutdatadFilter"/>
+                    <MenuItem Header="Undone-outdated" Click="UndoneOutdated"/>
+                    <MenuItem Header="Undone-not-outdated" Click="UndoneNotOutdated"/>
+                </MenuItem>
+                <MenuItem Header="Statistics" Click="Statistics"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About" Click="About"/>
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Background="Orange" Margin="3"/>
+
+                <TreeView Grid.Row="0" x:Name="treeView" ItemsSource="{Binding m_TDL}" SelectedItemChanged="treeView_SelectedItemChanged">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding m_Content_TDL}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{Binding Image}" Width="20" Height="20" Margin="0,0,5,0"/>
+                                <TextBlock Text="{Binding name}" FontSize="15"/>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+
+                <StackPanel Grid.Row="1" Name="StackPanelGrid" Visibility="Collapsed">
+                    <TextBlock Grid.Row="0" Name="t1" HorizontalAlignment="Left" Text="{Binding Path=DueToday, Mode=OneWay, StringFormat='Tasks due today: {0}'}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="1" Name="t2" HorizontalAlignment="Left" Text="{Binding Path=DueTomorrow, Mode=OneWay, StringFormat='Tasks due tomorrow: {0}'}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="2" Name="t3" HorizontalAlignment="Left" Text="{Binding Path=Overdue, Mode=OneWay, StringFormat='Tasks overdue: {0}'}" VerticalAlignment="Center"/>
+                    <Separator></Separator>
+                    <TextBlock Grid.Row="3" Name="t4" HorizontalAlignment="Left" Text="{Binding Path=Done, Mode=OneWay, StringFormat='Tasks done: {0}'}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="4" Name="t5" HorizontalAlignment="Left" Text="{Binding Path=ToBeDone, Mode=OneWay, StringFormat='Tasks to be done: {0}'}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0"/>
+                <Grid Grid.Row="1"/>
+
+                <Grid Grid.Row="0" Margin="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.4*"/>
+                        <RowDefinition Height="5*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Background="Gray"/>
+                    <Grid Grid.Row="1" Background="White"/>
+                    <TextBlock Grid.Row="0" HorizontalAlignment="Left" TextWrapping="Wrap" 
+           Text="{Binding SelectedItem.name, ElementName=treeView, StringFormat='Viewing {0} to-do list.'}" 
+           VerticalAlignment="Center" />
+                    <DataGrid Grid.Row="1" x:Name="TT" ItemsSource="{Binding SelectedItem.m_Content_Task, ElementName=treeView}" 
+    AutoGenerateColumns="False" CanUserAddRows="False" SelectionChanged="TT_SelectionChanged">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding status}" Value="Done">
+                                        <Setter Property="Background" Value="Green"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding status}" Value="InProgress">
+                                        <Setter Property="Background" Value="Orange"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding status}" Value="Created">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Task Name" Binding="{Binding name}" MinWidth="280"/>
+                            <DataGridTextColumn Header="Priority" Binding="{Binding priority}" MinWidth="80"/>
+                            <DataGridTextColumn Header="Type" Binding="{Binding category}" MinWidth="80"/>
+                            <DataGridTextColumn Header="Due Date" Binding="{Binding deadline}" MinWidth="80"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="5*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Background="Gray"/>
+                    <Grid Grid.Row="1" Background="White"/>
+                    <TextBlock Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,0" TextWrapping="Wrap" Text="Selected task's notes and attachments:" VerticalAlignment="Center" />
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <TextBox Text="{Binding ElementName=TT, Path=SelectedItem.description}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontSize="15"/>
+                    </ScrollViewer>
+                </Grid>
+
+            </Grid>
+        </Grid>
+    </Grid>
+
+</Window>

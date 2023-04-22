@@ -1,0 +1,20 @@
+﻿<Window x:Class="ToDoList.Views.ChangePath"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ToDoList.Views"
+        mc:Ignorable="d"
+        Title="ChangePath" Height="200" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Enter path here (if is root leave blank):" Margin="10"/>
+        <TextBox Grid.Row="1" Name="daddyFolder" Margin="10"/>
+        <Button Grid.Row="2" Content="Select" Margin="10" Click="Button_Click"/>
+    </Grid>
+
+</Window>

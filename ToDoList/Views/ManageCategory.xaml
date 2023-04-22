@@ -1,0 +1,33 @@
+﻿<Window x:Class="ToDoList.Views.ManageCategory"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewModel="clr-namespace:ToDoList.ViewModels"
+    xmlns:vm="clr-namespace:ToDoList"
+        Title="ManageCategory" Height="250" Width="300">
+
+    <Window.DataContext>
+        <vm:ClasaDeBinding/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Text="Lista Categoriilor:" Margin="10" FontSize="16" />
+
+        <!-- Categorii -->
+        <ListView Grid.Row="1" Margin="10" ItemsSource="{Binding categorii}" SelectionChanged="ListView_SelectionChanged"/>
+
+        <!-- Butoane -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Button Content="Add" Margin="5" Click="Add"/>
+            <Button Content="Change" Margin="5" Click="Change"/>
+            <Button Content="Delete" Margin="5" Click="Delete"/>
+            <Button Content="Close" Margin="5" Click="Close"/>
+        </StackPanel>
+    </Grid>
+</Window>
